@@ -9,10 +9,7 @@ of the permutation matrix
 ###Goals:
 ####Completed:
 * README, pom.xml, .gitignore
-
+* Program finished
 
 ####Short Term Plans:
-* Finish program
-
-####Long Term Plans:
 * GUI
