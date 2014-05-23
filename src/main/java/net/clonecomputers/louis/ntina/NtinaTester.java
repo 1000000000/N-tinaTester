@@ -19,6 +19,7 @@ public class NtinaTester extends Thread {
 	@Override
 	public void run() {
 		int i = 0;
+		int numGood = 0;
 		while(running) {
 			++i;
 			System.out.print(i);
@@ -38,13 +39,15 @@ public class NtinaTester extends Thread {
 				++period;
 				matrix = matrix.times(origMatrix);
 			}
+			if(period == i) numGood++;
 			System.out.print("\tPeriod length: ");
 			System.out.println(period);
 			System.out.println();
 		}
 		System.out.print("Stopped after ");
 		System.out.print(i);
-		System.out.println("-tina");
+		System.out.println();
+		System.out.printf("%1$d/%2$d are valid n-tinas\n", numGood, i);
 	}
 	
 	private static Matrix getNtinaPermutationMatrix(int size) {
