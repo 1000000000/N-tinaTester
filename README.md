@@ -12,6 +12,8 @@ Run it from terminal. To stop it hit enter in the terminal.
 ####Completed:
 * README, pom.xml, .gitignore
 * Program finished
+* Exports data to CSV
+* Finds subgraphs in n-tinas
 
 ####Short Term Plans:
 * GUI
