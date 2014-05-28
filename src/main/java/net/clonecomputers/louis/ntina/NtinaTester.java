@@ -29,12 +29,12 @@ public class NtinaTester extends Thread {
 	
 	@Override
 	public void run() {
-		int i = 0;
+		int n = 0;
 		int numGood = 0;
 		File outputFile = new File("out.csv");
-		int n = 0;
+		int a = 0;
 		while(outputFile.exists()) {
-			outputFile = new File("out-" + ++n + ".csv");
+			outputFile = new File("out-" + ++a + ".csv");
 		}
 		CSVPrinter p = null;
 		try {
@@ -46,12 +46,12 @@ public class NtinaTester extends Thread {
 		}
 		try {
 			while(running) {
-				++i;
-				p.print(i);
-				System.out.print(i);
+				++n;
+				p.print(n);
+				System.out.print(n);
 				System.out.println("-tina:");
-				Matrix matrix = getNtinaPermutationMatrix(i);
-				Matrix identity = Matrix.identity(i, i);
+				Matrix matrix = getNtinaPermutationMatrix(n);
+				Matrix identity = Matrix.identity(n, n);
 				Matrix lagrangian = identity.minus(matrix);
 				int numZeroEigenvales = 0;
 				EigenvalueDecomposition eigs = lagrangian.eig();
@@ -63,7 +63,7 @@ public class NtinaTester extends Thread {
 						++numZeroEigenvales;
 						double[] eigenvector = eigenvectors.getColumnVector(j);
 						int acc = 0;
-						double bound = 0.5/Math.sqrt(i);
+						double bound = 0.5/Math.sqrt(n);
 						for(double d : eigenvector) {
 							if(Math.abs(d) > bound) ++acc;
 						}
@@ -80,7 +80,7 @@ public class NtinaTester extends Thread {
 				System.out.print("\tSubgraphs: ");
 				System.out.println(subgraphs);
 				int period = lcm(subgraphs.keySet());
-				if(period == i) numGood++;
+				if(period == n) numGood++;
 				p.print(period);
 				System.out.print("\tPeriod length: ");
 				System.out.println(period);
@@ -104,9 +104,9 @@ public class NtinaTester extends Thread {
 			e.printStackTrace();
 		}
 		System.out.print("Stopped after ");
-		System.out.print(i);
+		System.out.print(n);
 		System.out.println();
-		System.out.printf("%1$d/%2$d are valid n-tinas\n", numGood, i);
+		System.out.printf("%1$d/%2$d are valid n-tinas\n", numGood, n);
 	}
 	
 	private static int lcm(Set<Integer> nums) {
