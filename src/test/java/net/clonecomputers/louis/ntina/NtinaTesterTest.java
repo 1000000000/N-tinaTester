@@ -5,10 +5,9 @@ import static junitx.util.PrivateAccessor.invoke;
 
 import org.junit.Test;
 
-import Jama.Matrix;
-
 public class NtinaTesterTest {
 
+	/* Old test for a method that no longer exists
 	@Test
 	public void testGetNtinaPermutationMatrix() throws Throwable {
 		double[][] monotinaPermutationMatrix = {{1}};
@@ -34,6 +33,6 @@ public class NtinaTesterTest {
 		assertArrayEquals(bistinaPermutationMatrix, bistina);
 		assertArrayEquals(tristinaPermutationMatrix, tristina);
 		assertArrayEquals(sestinaPermutationMatrix, sestina);
-	}
+	}*/
 
 }
