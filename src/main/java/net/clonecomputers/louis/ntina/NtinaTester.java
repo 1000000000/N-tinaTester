@@ -12,9 +12,6 @@ import java.util.Set;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
-import Jama.EigenvalueDecomposition;
-import Jama.Matrix;
-
 public class NtinaTester extends Thread {
 	
 	private boolean running = true;
