@@ -38,7 +38,7 @@ public class NtinaTester extends Thread {
 		}
 		CSVPrinter p = null;
 		try {
-			p = new CSVPrinter(new BufferedWriter(new FileWriter(outputFile)), CSVFormat.RFC4180);
+			p = new CSVPrinter(new BufferedWriter(new FileWriter(outputFile)), CSVFormat.RFC4180.withRecordSeparator('\n'));
 		} catch (IOException e) {
 			System.err.println("Error opening writing to " + outputFile);
 			e.printStackTrace();
@@ -50,36 +50,28 @@ public class NtinaTester extends Thread {
 				p.print(n);
 				System.out.print(n);
 				System.out.println("-tina:");
-				Matrix matrix = getNtinaPermutationMatrix(n);
-				Matrix identity = Matrix.identity(n, n);
-				Matrix lagrangian = identity.minus(matrix);
-				int numZeroEigenvales = 0;
-				EigenvalueDecomposition eigs = lagrangian.eig();
-				Matrix eigenvectors = eigs.getV();
-				double[] eigenvalues = eigs.getRealEigenvalues();
+				boolean[] visited = new boolean[n];
+				int subGraphLength = 0;
 				Map<Integer, Integer> subgraphs = new HashMap<Integer, Integer>();
-				for(int j = 0; j < eigenvalues.length; ++j) {
-					if(Math.abs(eigenvalues[j]) <= 1e-10) {
-						++numZeroEigenvales;
-						double[] eigenvector = eigenvectors.getColumnVector(j);
-						int acc = 0;
-						double bound = 0.5/Math.sqrt(n);
-						for(double d : eigenvector) {
-							if(Math.abs(d) > bound) ++acc;
-						}
-						if(subgraphs.containsKey(acc)) {
-							subgraphs.put(acc, subgraphs.get(acc) + 1);
-						} else {
-							subgraphs.put(acc, 1);
-						}
+				for(int i = 0; i < n; ++i) {
+					if(subGraphLength == 0 && visited[i]) continue;
+					if(visited[i]) {
+						Integer newNum = subgraphs.get(subGraphLength);
+						subgraphs.put(subGraphLength, newNum != null ? newNum + 1 : 1);
+						subGraphLength = 0;
+					} else {
+						visited[i] = true;
+						++subGraphLength;
+						i = getNextLoc(n, i) - 1;
 					}
 				}
-				p.print(numZeroEigenvales);
+				Set<Integer> subgraphsKeys = subgraphs.keySet();
+				p.print(subgraphsKeys.size());
 				System.out.print("\tNumber of subgraphs: ");
-				System.out.println(numZeroEigenvales);
+				System.out.println(subgraphsKeys.size());
 				System.out.print("\tSubgraphs: ");
 				System.out.println(subgraphs);
-				int period = lcm(subgraphs.keySet());
+				int period = lcm(subgraphsKeys);
 				if(period == n) numGood++;
 				p.print(period);
 				System.out.print("\tPeriod length: ");
@@ -126,15 +118,9 @@ public class NtinaTester extends Thread {
 		return n1;
 	}
 	
-	private static Matrix getNtinaPermutationMatrix(int size) {
-		double[][] matrixArray = new double[size][size];
-		for(int j = 0; j < size/2; ++j) {
-			matrixArray[2*j+1][j] = 1;
-		}
-		for(int j = size/2; j < size; ++j) {
-			matrixArray[2*(size-j-1)][j] = 1;
-		}
-		return new Matrix(matrixArray);
+	private static int getNextLoc(int size, int currentLoc) {
+		if(currentLoc < size/2) return 2*currentLoc + 1;
+		else return 2*(size - currentLoc - 1);
 	}
 
 }
