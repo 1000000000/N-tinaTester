@@ -48,27 +48,28 @@ public class NtinaTester extends Thread {
 				System.out.print(n);
 				System.out.println("-tina:");
 				boolean[] visited = new boolean[n];
-				int subGraphLength = 0;
+				int subgraphLength = 0;
+				int numSubgraphs = 0;
 				Map<Integer, Integer> subgraphs = new HashMap<Integer, Integer>();
 				for(int i = 0; i < n; ++i) {
-					if(subGraphLength == 0 && visited[i]) continue;
+					if(subgraphLength == 0 && visited[i]) continue;
 					if(visited[i]) {
-						Integer newNum = subgraphs.get(subGraphLength);
-						subgraphs.put(subGraphLength, newNum != null ? newNum + 1 : 1);
-						subGraphLength = 0;
+						++numSubgraphs;
+						Integer newNum = subgraphs.get(subgraphLength);
+						subgraphs.put(subgraphLength, newNum != null ? newNum + 1 : 1);
+						subgraphLength = 0;
 					} else {
 						visited[i] = true;
-						++subGraphLength;
+						++subgraphLength;
 						i = getNextLoc(n, i) - 1;
 					}
 				}
-				Set<Integer> subgraphsKeys = subgraphs.keySet();
-				p.print(subgraphsKeys.size());
+				p.print(numSubgraphs);
 				System.out.print("\tNumber of subgraphs: ");
-				System.out.println(subgraphsKeys.size());
+				System.out.println(numSubgraphs);
 				System.out.print("\tSubgraphs: ");
 				System.out.println(subgraphs);
-				int period = lcm(subgraphsKeys);
+				int period = lcm(subgraphs.keySet());
 				if(period == n) numGood++;
 				p.print(period);
 				System.out.print("\tPeriod length: ");
