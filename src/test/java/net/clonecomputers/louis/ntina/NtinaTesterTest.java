@@ -5,6 +5,7 @@ import static junitx.util.PrivateAccessor.invoke;
 
 import org.junit.Test;
 
+@SuppressWarnings("unused")
 public class NtinaTesterTest {
 
 	/* Old test for a method that no longer exists
