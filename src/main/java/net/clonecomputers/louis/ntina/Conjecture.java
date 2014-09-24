@@ -30,17 +30,15 @@ public class Conjecture {
 	 * @param num
 	 * @return false if and only if this conjecture is a complete conjecture and 
 	 */
-	public boolean addData(int n, int num) {
+	public Conjecture addData(int n, int num) {
 		if (child != null) child.addData(n, num);
 		if (doesInclude(n)) {
 			if (num <= 0) {
 				if (lockedIn) {
-					child.ancestor = ancestor;
-					if (ancestor != null) ancestor.child = child;
+					return remove();
 				} else {
 					++diff;
 				}
-				return !lockedIn;
 			} else {
 				if (!lockedIn) {
 					lockedIn = true;
@@ -49,11 +47,17 @@ public class Conjecture {
 				++score;
 			}
 		}
-		return true;
+		return null;
 	}
 	
 	public boolean doesInclude(int n) {
 		return (n - 1) % diff == (initial - 1); //This minus one thing is because 0 < initial <= diff while 0 <= n % diff < diff
+	}
+	
+	public Conjecture remove() {
+		child.ancestor = ancestor;
+		if (ancestor != null) ancestor.child = child;
+		return child;
 	}
 	
 	public Conjecture getAncestor() {
@@ -66,6 +70,10 @@ public class Conjecture {
 	
 	public int getScore() {
 		return score;
+	}
+	
+	public int getDiff() {
+		return diff;
 	}
 	
 	public String toString() {
