@@ -112,14 +112,17 @@ public class NtinaTester extends Thread {
 			}
 			List<Entry<Integer, List<Conjecture>>> entries = new ArrayList<Map.Entry<Integer,List<Conjecture>>>(conjectures.entrySet());
 			Collections.sort(entries, new ConjectureEntryComparator());
-			for (Entry<Integer, List<Conjecture>> entry : conjectures.entrySet()) {
+			for (Entry<Integer, List<Conjecture>> entry : entries) {
 				cp.print(entry.getKey()); // Print the subgroup size the conjectures pretain to
 				for (Conjecture c : entry.getValue()) {
 					Conjecture child = c;
+					outside:
 					while (child != null) {
-						if (child.getScore() >= 0) {
-							cp.print(child);
+						while (child.getScore() < 0) {
+							child = child.remove();
+							if(child == null) break outside;
 						}
+						cp.print(child);
 						child = child.getChild();
 					}
 				}

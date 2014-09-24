@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.clonecomputers.louis</groupId>
   <artifactId>NtinaTester</artifactId>
-  <version>2.3.1</version>
+  <version>2.3.2</version>
   <name>n-tina Tester</name>
   <description>Finds the number of subgraphs and the length of the period of the permutation matrix</description>
 
