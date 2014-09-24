@@ -14,6 +14,7 @@ Run it from terminal. To stop it hit enter in the terminal.
 * Program finished
 * Exports data to CSV
 * Finds subgraphs in n-tinas
+* Comes up with conjectures for when various sizes of subgroups appear
 
 ####Short Term Plans:
 * GUI

@@ -4,7 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -29,19 +32,26 @@ public class NtinaTester extends Thread {
 		int n = 0;
 		int numGood = 0;
 		File outputFile = new File("out.csv");
+		File coutputFile = new File("conjectures.csv");
 		int a = 0;
 		while(outputFile.exists()) {
 			outputFile = new File("out-" + ++a + ".csv");
 		}
-		CSVPrinter p = null;
+		a = 0;
+		while (coutputFile.exists()) {
+			coutputFile = new File("conjectures-" + ++a + ".csv");
+		}
+		CSVPrinter p, cp = null;
 		try {
 			p = new CSVPrinter(new BufferedWriter(new FileWriter(outputFile)), CSVFormat.RFC4180.withRecordSeparator('\n'));
+			cp = new CSVPrinter(new BufferedWriter(new FileWriter(coutputFile)), CSVFormat.RFC4180.withRecordSeparator('\n'));
 		} catch (IOException e) {
-			System.err.println("Error opening writing to " + outputFile);
+			System.err.println("Error opening writing to " + outputFile + " or " + coutputFile);
 			e.printStackTrace();
 			return;
 		}
 		try {
+			Map<Integer, List<Conjecture>> conjectures = new HashMap<Integer, List<Conjecture>>();
 			while(running) {
 				++n;
 				p.print(n);
@@ -75,22 +85,55 @@ public class NtinaTester extends Thread {
 				System.out.print("\tPeriod length: ");
 				System.out.println(period);
 				System.out.println();
+				for(Entry<Integer, List<Conjecture>> conjecture : conjectures.entrySet()) {
+					Integer num = subgraphs.get(conjecture.getKey()); // How many of a size of this ntina has
+					int num2 = num != null ? num : 0;
+					for (Conjecture aConjecture : conjecture.getValue()) {
+						aConjecture.addData(n, num2);
+					}
+					if (num2 > 0) { //For a particular subgroup if it appears at least once in an ntina then we need to add a new conjecture for it in the set
+						conjecture.getValue().add(new Conjecture(n));
+					}
+				}
 				for(Entry<Integer, Integer> e : subgraphs.entrySet()) {
+					// This is for adding new subgroups to the conjecture thing
+					if (!conjectures.containsKey(e.getKey())) { //If we are not yet paying attention to subgroup of size e.getKey()
+						List<Conjecture> newSubgroup = new ArrayList<Conjecture>();
+						newSubgroup.add(new Conjecture(n)); // n is the first one that works for that subgroup
+						conjectures.put(e.getKey(), newSubgroup);
+					}
 					for(int j = 0; j < e.getValue(); ++j) {
 						p.print(e.getKey());
 					}
 				}
 				p.println();
 			}
+			List<Entry<Integer, List<Conjecture>>> entries = new ArrayList<Map.Entry<Integer,List<Conjecture>>>(conjectures.entrySet());
+			Collections.sort(entries, new ConjectureEntryComparator());
+			for (Entry<Integer, List<Conjecture>> entry : conjectures.entrySet()) {
+				cp.print(entry.getKey()); // Print the subgroup size the conjectures pretain to
+				for (Conjecture c : entry.getValue()) {
+					Conjecture child = c;
+					while (child != null) {
+						if (child.getScore() >= 0) {
+							cp.print(child);
+						}
+						child = child.getChild();
+					}
+				}
+				cp.println();
+			}
+			cp.flush();
 			p.flush();
 		} catch (IOException e) {
-			System.err.println("Error writing to or flushing writer");
+			System.err.println("Error writing to or flushing writers");
 			e.printStackTrace();
 		}
 		try {
+			cp.close();
 			p.close();
 		} catch (IOException e) {
-			System.err.println("Error closing writer");
+			System.err.println("Error closing writers");
 			e.printStackTrace();
 		}
 		System.out.print("Stopped after ");
