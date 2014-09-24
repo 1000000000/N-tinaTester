@@ -55,7 +55,7 @@ public class Conjecture {
 	}
 	
 	public Conjecture remove() {
-		child.ancestor = ancestor;
+		if (child != null) child.ancestor = ancestor;
 		if (ancestor != null) ancestor.child = child;
 		return child;
 	}
