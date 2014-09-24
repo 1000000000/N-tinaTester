@@ -17,4 +17,5 @@ Run it from terminal. To stop it hit enter in the terminal.
 * Comes up with conjectures for when various sizes of subgroups appear
 
 ####Short Term Plans:
+* Purge redundant conjectures when the program ends
 * GUI
