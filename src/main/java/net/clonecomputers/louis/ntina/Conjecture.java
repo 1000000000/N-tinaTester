@@ -60,6 +60,10 @@ public class Conjecture {
 		return child;
 	}
 	
+	public boolean isSupersetOf(Conjecture other) {
+		return doesInclude(other.initial) && (other.diff % diff == 0);
+	}
+	
 	public Conjecture getAncestor() {
 		return ancestor;
 	}
