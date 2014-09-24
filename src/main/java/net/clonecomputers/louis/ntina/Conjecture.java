@@ -47,7 +47,7 @@ public class Conjecture {
 				++score;
 			}
 		}
-		return null;
+		return this;
 	}
 	
 	public boolean doesInclude(int n) {

@@ -88,8 +88,10 @@ public class NtinaTester extends Thread {
 				for(Entry<Integer, List<Conjecture>> conjecture : conjectures.entrySet()) {
 					Integer num = subgraphs.get(conjecture.getKey()); // How many of a size of this ntina has
 					int num2 = num != null ? num : 0;
-					for (Conjecture aConjecture : conjecture.getValue()) {
-						aConjecture.addData(n, num2);
+					for (int i = 0; i < conjecture.getValue().size(); ++i) {
+						Conjecture aConjecture = conjecture.getValue().remove(i); // This is so that if the first of a family of conjectures is not valid we do not keep it
+						aConjecture = aConjecture.addData(n, num2); // Returns either the same of its child if the conjecture is not valid
+						conjecture.getValue().add(i, aConjecture);
 					}
 					if (num2 > 0) { //For a particular subgroup if it appears at least once in an ntina then we need to add a new conjecture for it in the set
 						conjecture.getValue().add(new Conjecture(n));
