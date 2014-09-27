@@ -114,20 +114,38 @@ public class NtinaTester extends Thread {
 			Collections.sort(entries, new ConjectureEntryComparator());
 			for (Entry<Integer, List<Conjecture>> entry : entries) {
 				cp.print(entry.getKey()); // Print the subgroup size the conjectures pretain to
-				for (Conjecture c : entry.getValue()) {
-					Conjecture child = c;
-					outside:
-					while (child != null) {
-						while (child.getScore() < 0) {
-							child = child.remove();
-							if(child == null) break outside;
-						}
-						cp.print(child);
-						child = child.getChild();
+				for (int i = 0; i < entry.getValue().size(); ++i) {
+					Conjecture base = entry.getValue().get(i);
+					if (base.getScore() < 0) {
+						entry.getValue().remove(i);
+						--i;
+						continue;
 					}
-				}
+					while (base != null) {
+						for (int j = i; j < entry.getValue().size(); ++j) {
+							Conjecture toTest = entry.getValue().get(j);
+							while (toTest != null) {
+								if (toTest.getScore() < 0 || (toTest != base && base.isSupersetOf(toTest))) {
+									if (toTest.getAncestor() == null) {
+										if (toTest.getChild() != null) {
+											entry.getValue().set(j, toTest.getChild());
+										} else {
+											entry.getValue().remove(j);
+											--j;
+										}
+									}
+									toTest = toTest.remove();
+								} else {
+									toTest = toTest.getChild();
+								}
+							} // end while
+						} // end for
+						cp.print(base);
+						base = base.getChild();
+					} // end while
+				} // end for
 				cp.println();
-			}
+			} // end for
 			cp.flush();
 			p.flush();
 		} catch (IOException e) {
