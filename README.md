@@ -16,6 +16,7 @@ Run it from terminal. To stop it hit enter in the terminal.
 * Finds subgraphs in n-tinas
 * Comes up with conjectures for when various sizes of subgroups appear
 * Purge redundant conjectures when the program ends
+* Conjectures are filtered by minimum score inputted by user
 
 ####Short Term Plans:
 * GUI

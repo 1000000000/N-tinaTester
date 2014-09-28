@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
@@ -110,22 +111,34 @@ public class NtinaTester extends Thread {
 				}
 				p.println();
 			}
+			Scanner in = new Scanner(System.in);
+			System.out.print("Enter minimum score for conjectures (1 is recommended): ");
+			int thresh = in.nextInt();
+			while (thresh < 0) {
+				System.out.print("The minimum score must be at least 0. Reenter score: ");
+				thresh = in.nextInt();
+			}
 			List<Entry<Integer, List<Conjecture>>> entries = new ArrayList<Map.Entry<Integer,List<Conjecture>>>(conjectures.entrySet());
 			Collections.sort(entries, new ConjectureEntryComparator());
 			for (Entry<Integer, List<Conjecture>> entry : entries) {
 				cp.print(entry.getKey()); // Print the subgroup size the conjectures pretain to
+				outside:
 				for (int i = 0; i < entry.getValue().size(); ++i) {
 					Conjecture base = entry.getValue().get(i);
-					if (base.getScore() < 0) {
-						entry.getValue().remove(i);
-						--i;
-						continue;
+					while (base.getScore() < thresh) {
+						base = base.remove();
+						if (base == null) {
+							entry.getValue().remove(i);
+							--i;
+							continue outside;
+						}
 					}
+					entry.getValue().set(i, base);
 					while (base != null) {
 						for (int j = i; j < entry.getValue().size(); ++j) {
 							Conjecture toTest = entry.getValue().get(j);
 							while (toTest != null) {
-								if (toTest.getScore() < 0 || (toTest != base && base.isSupersetOf(toTest))) {
+								if (toTest.getScore() < thresh || (toTest != base && base.isSupersetOf(toTest))) {
 									if (toTest.getAncestor() == null) {
 										if (toTest.getChild() != null) {
 											entry.getValue().set(j, toTest.getChild());
