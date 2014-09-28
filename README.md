@@ -19,4 +19,8 @@ Run it from terminal. To stop it hit enter in the terminal.
 * Conjectures are filtered by minimum score inputted by user
 
 ####Short Term Plans:
+* Autosave conjectures every so often in case of program crash
+* Save and autosave state to allow resuming after program ended or crashed
+
+####Long Term Plans:
 * GUI
